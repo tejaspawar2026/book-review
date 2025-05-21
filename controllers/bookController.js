@@ -1,4 +1,4 @@
-import { addBook, fetchBooks } from '../services/bookService.js';
+import { addBook, fetchBooks, fetchBookById } from '../services/bookService.js';
 
 export const createBook= async (req, res) => {
   try {

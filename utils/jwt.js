@@ -1,7 +1,10 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const generateToken = (data) => {
   return jwt.sign(data, process.env.JWT_SECRET, {
-    expiresIn: '1d', // Token valid for 1 day
+    expiresIn: process.env.JWT_SECRET,
   });
 };

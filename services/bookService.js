@@ -8,7 +8,7 @@ export const fetchBooks = async () => {
   return await db.Book.findAll();
 };
 
-export const getBookById = async (id) => {
+export const fetchBookById = async (id) => {
   const book = await db.Book.findByPk(id);
   if (!book) {
     throw new Error('Book not found');
