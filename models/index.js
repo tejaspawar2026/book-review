@@ -16,6 +16,12 @@ const db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
 db.Book = BookModel(sequelize, DataTypes);
 db.User = UserModel(sequelize, DataTypes);
 export default db;
