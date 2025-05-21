@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import db from './models/index.js';
-import masterRouter from './routes/masterRouter.js';
+import masterRouter from './router/masterRouter.js';
 
 dotenv.config();
 
