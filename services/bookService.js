@@ -1,5 +1,5 @@
 import db from '../models/index.js';
-import { Sequelize, Op } from 'sequelize';
+import { Sequelize, Op, literal } from 'sequelize';
 
 export const addBook = async (data) => {
   return await db.Book.create(data);
@@ -80,21 +80,24 @@ export const getBookWithPaginatedReviews = async (bookId, page, limit) => {
   };
 };
 
-export const searchBooks = async (query) => {
+export const searchAllBooks = async (query) => {
   const page = parseInt(query.page) || 1;
   const limit = parseInt(query.limit) || 10;
   const offset = (page - 1) * limit;
   const search = query.searchTerm || '';
 
   const whereCondition = search
-    ? Sequelize.literal(`MATCH (title, author) AGAINST ('${search}' IN NATURAL LANGUAGE MODE)`)
+    ? literal(
+        `MATCH (title, author) AGAINST (:search IN NATURAL LANGUAGE MODE)`
+      )
     : {};
 
   const { count, rows: books } = await db.Book.findAndCountAll({
     where: whereCondition,
+    replacements: { search },
     limit,
     offset,
-    order: [['createdAt', 'DESC']],
+    order: [["createdAt", "DESC"]],
   });
 
   const totalPages = Math.ceil(count / limit);

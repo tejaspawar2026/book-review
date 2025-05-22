@@ -1,4 +1,4 @@
-import { addBook, fetchBooks, getBookWithPaginatedReviews, searchBooks } from '../services/bookService.js';
+import { addBook, fetchBooks, getBookWithPaginatedReviews, searchAllBooks } from '../services/bookService.js';
 
 export const createBook= async (req, res) => {
   try {
@@ -12,6 +12,15 @@ export const createBook= async (req, res) => {
 export const getBooks = async (req, res) => {
   try {
     const books = await fetchBooks(req.query);
+    res.status(201).json({ success: true, message:"Books fetched successfully", data: books });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+export const searchBooks = async (req, res) => {
+  try {
+    const books = await searchAllBooks(req.query);
     res.status(201).json({ success: true, message:"Books fetched successfully", data: books });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -35,15 +44,6 @@ export const getBookById = async (req, res) => {
       message: 'Book fetched successfully',
       data: result,
     });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
-
-export const search = async (req, res) => {
-  try {
-    const books = await searchBooks(req.query);
-    res.status(201).json({ success: true, message:"Books fetched successfully", data: books });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

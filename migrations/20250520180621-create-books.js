@@ -27,7 +27,12 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.DATE,
     },
   });
-  await queryInterface.sequelize.query(`ALTER TABLE Books ADD FULLTEXT INDEX book_fulltext_index (title, author, genre);`);
+  await queryInterface.addIndex('Books', {
+    name: 'book_fulltext_index',
+    type: 'FULLTEXT',
+    fields: ['title', 'author'],
+  });
+
 }
 
 
