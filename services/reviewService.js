@@ -1,5 +1,9 @@
 import db from '../models/index.js';
 
-export const createReview = async (userData) => {
-  return await db.Review.create(userData);
+export const findReviewByUserAndBook = async (userId, bookId) => {
+  return await db.Review.findOne({ where: { userId, bookId } });
+};
+
+export const createReview = async (data) => {
+  return await db.Review.create(data);
 };

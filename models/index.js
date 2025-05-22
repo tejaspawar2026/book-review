@@ -2,6 +2,7 @@ import { Sequelize, DataTypes } from 'sequelize';
 import configObj from '../config/config.js';
 import BookModel from './book.js';
 import UserModel from './user.js';
+import ReviewModel from './review.js';
 
 const env = 'development';
 const config = configObj[env];
@@ -24,4 +25,5 @@ Object.keys(db).forEach(modelName => {
 
 db.Book = BookModel(sequelize, DataTypes);
 db.User = UserModel(sequelize, DataTypes);
+db.Review = ReviewModel(sequelize, DataTypes);
 export default db;

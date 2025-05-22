@@ -20,7 +20,7 @@ export const authenticate = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(403).json({ error: "Failed to authenticate token" });
+      return res.status(403).json({ error: "Please provide valid token" });
     }
 
     req.user = decoded;
