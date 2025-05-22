@@ -11,7 +11,7 @@ export const createBook= async (req, res) => {
 
 export const getBooks = async (req, res) => {
   try {
-    const books = await fetchBooks();
+    const books = await fetchBooks(req.query);
     res.status(201).json({ success: true, message:"Books fetched successfully", data: books });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

@@ -12,6 +12,11 @@ export async function up(queryInterface, Sequelize) {
     },
     author: {
       type: Sequelize.STRING,
+      allowNull: false,
+    },
+    genre: {
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     createdAt: {
       allowNull: false,
@@ -22,7 +27,9 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.DATE,
     },
   });
+  await queryInterface.sequelize.query(`ALTER TABLE Books ADD FULLTEXT INDEX book_fulltext_index (title, author, genre);`);
 }
+
 
 export async function down(queryInterface, Sequelize) {
   await queryInterface.dropTable('Books');

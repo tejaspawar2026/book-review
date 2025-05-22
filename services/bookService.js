@@ -5,8 +5,32 @@ export const addBook = async (data) => {
   return await db.Book.create(data);
 };
 
-export const fetchBooks = async () => {
-  return await db.Book.findAll();
+export const fetchBooks = async (query) => {
+  const page = parseInt(query.page) || 1;
+  const limit = parseInt(query.limit) || 10;
+  const offset = (page - 1) * limit;
+  const search = query.search || '';
+
+  const whereCondition = search
+    ? Sequelize.literal(`MATCH (title, author, genre) AGAINST ('${search}' IN NATURAL LANGUAGE MODE)`)
+    : {};
+
+  const { count, rows: books } = await db.Book.findAndCountAll({
+    where: whereCondition,
+    limit,
+    offset,
+    order: [['createdAt', 'DESC']],
+  });
+
+  const totalPages = Math.ceil(count / limit);
+
+  return {
+    books,
+    totalBooks: count,
+    totalPages,
+    currentPage: page,
+    limit,
+  };
 };
 
 export const getBookWithPaginatedReviews = async (bookId, page, limit) => {

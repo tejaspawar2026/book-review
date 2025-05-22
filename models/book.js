@@ -7,6 +7,9 @@ export default (sequelize, DataTypes) => {
     author: {
       type: DataTypes.STRING,
     },
+    genre: {
+      type: DataTypes.STRING,
+    },
   });
 
   return Book;
