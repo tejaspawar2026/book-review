@@ -1,5 +1,5 @@
 import db from '../models/index.js';
-import Sequelize from 'sequelize';
+import { Sequelize, Op } from 'sequelize';
 
 export const addBook = async (data) => {
   return await db.Book.create(data);
@@ -9,14 +9,19 @@ export const fetchBooks = async (query) => {
   const page = parseInt(query.page) || 1;
   const limit = parseInt(query.limit) || 10;
   const offset = (page - 1) * limit;
-  const search = query.search || '';
 
-  const whereCondition = search
-    ? Sequelize.literal(`MATCH (title, author, genre) AGAINST ('${search}' IN NATURAL LANGUAGE MODE)`)
-    : {};
+  const whereClause = {};
+
+  if (query.author) {
+    whereClause.author = { [Op.like]: `%${query.author}%` };
+  }
+
+  if (query.genre) {
+    whereClause.genre = { [Op.like]: `%${query.genre}%` };
+  }
 
   const { count, rows: books } = await db.Book.findAndCountAll({
-    where: whereCondition,
+    where: whereClause,
     limit,
     offset,
     order: [['createdAt', 'DESC']],
@@ -29,7 +34,7 @@ export const fetchBooks = async (query) => {
     totalBooks: count,
     totalPages,
     currentPage: page,
-    limit,
+    limit
   };
 };
 
@@ -69,6 +74,34 @@ export const getBookWithPaginatedReviews = async (bookId, page, limit) => {
     averageRating,
     reviews,
     totalReviews,
+    totalPages,
+    currentPage: page,
+    limit,
+  };
+};
+
+export const searchBooks = async (query) => {
+  const page = parseInt(query.page) || 1;
+  const limit = parseInt(query.limit) || 10;
+  const offset = (page - 1) * limit;
+  const search = query.searchTerm || '';
+
+  const whereCondition = search
+    ? Sequelize.literal(`MATCH (title, author) AGAINST ('${search}' IN NATURAL LANGUAGE MODE)`)
+    : {};
+
+  const { count, rows: books } = await db.Book.findAndCountAll({
+    where: whereCondition,
+    limit,
+    offset,
+    order: [['createdAt', 'DESC']],
+  });
+
+  const totalPages = Math.ceil(count / limit);
+
+  return {
+    books,
+    totalBooks: count,
     totalPages,
     currentPage: page,
     limit,
