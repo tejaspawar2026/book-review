@@ -17,12 +17,6 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
     }
   });
-
-  // Associations
-  Review.associate = (models) => {
-    Review.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
-    Review.belongsTo(models.Book, { foreignKey: 'bookId', as: 'book' });
-  };
-
+  
   return Review;
 };

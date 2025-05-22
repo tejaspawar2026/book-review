@@ -3,26 +3,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const excludedRoutes = [ '/auth/login', '/user/signup' ];
-
 export const authenticate = (req, res, next) => {
-  // Check if the route is in the excluded list
-  if (excludedRoutes.includes(req.path)) {
-    return next();
-  }
-
-  // Get the token from the Authorization header (Bearer token)
   const token = req.headers.authorization?.split(" ")[1];
-
   if (!token) {
     return res.status(401).json({ error: "No token provided" });
   }
-
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       return res.status(403).json({ error: "Please provide valid token" });
     }
-
     req.user = decoded;
     next();
   });

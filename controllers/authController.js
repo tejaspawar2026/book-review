@@ -1,27 +1,30 @@
 import bcrypt from 'bcrypt';
-import { login } from '../services/authService.js';
+import { authService } from '../services/authService.js';
 import { generateToken } from '../utils/jwt.js';
 
-export const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+export const authController = {
+  loginUser: async (req, res) => {
+    try {
+      const { email, password } = req.body;
 
-    const user = await login({ email });
+      const user = await authService.login({ email });
 
-    if (!user) {
-      return res.status(401).json({ status: false, message: 'Invalid email or password' });
+      if (!user) {
+        return res.status(401).json({ status: false, message: 'Invalid email or password' });
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        return res.status(401).json({ status: false, message: 'Invalid email or password' });
+      }
+
+      const token = generateToken({ user_id: user.id });
+
+      res.status(200).json({ status: true, message: 'Login successful', token });
+    } catch (error) {
+      res.status(500).json({ status: false, message: error.message });
     }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({status: false, message: 'Invalid email or password' });
-    }
-
-    const token = generateToken({ user_id: user.id });
-
-    res.status(200).json({status: true, message: 'Login successful', token });
-  } catch (error) {
-    res.status(500).json({ status: false, message: error.message });
   }
-};
+}
+ 

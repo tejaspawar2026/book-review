@@ -16,23 +16,11 @@ export async function up(queryInterface, Sequelize) {
     },
     userId: {
       type: Sequelize.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Users',
-        key: 'id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      allowNull: false
     },
     bookId: {
       type: Sequelize.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Books',
-        key: 'id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      allowNull: false
     },
     createdAt: {
       allowNull: false,
